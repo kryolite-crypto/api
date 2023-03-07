@@ -1,0 +1,649 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Kryolite API",
+    "description": "https://kryolite.io/",
+    "version": "v40-DEV"
+  },
+  "servers": [
+    {
+      "url": "https://testnet-1.kryolite.io"
+    },
+    {
+      "url": "https://testnet-2.kryolite.io"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ledger",
+      "description": null
+    },
+    {
+      "name": "contract",
+      "description": null
+    },
+    {
+      "name": "blocks",
+      "description": null
+    },
+    {
+      "name": "misc",
+      "description": "Miscellaneous"
+    },
+    {
+      "name": "to-do",
+      "description": "Methods that are not yet implemented"
+    }
+  ],
+  "paths": {
+    "/richlist": {
+      "get": {
+        "tags": [
+          "misc"
+        ],
+        "description": "Returns up to 25 people that hold the most balance",
+        "responses": {
+          "200": {
+            "description": "Request success",
+            "content": {
+              "text/plain; charset=utf-8": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": "ae2152cf-4263-4f85-b361-da0920bfac1e",
+                    "address": "kryo:5VWKXb3AVi3W1cf1DYaWQeAeucUH6CSK6gNT",
+                    "balance": 14433750000000,
+                    "pending": 0
+                  },
+                  {
+                    "id": "22df6fc8-59a1-4d2b-9910-3442be6162e9",
+                    "address": "kryo:5VWvts7oP8guKEptxxZUuHt59nJTMCfnQk3s",
+                    "balance": 102750000000,
+                    "pending": 0
+                  },
+                  {
+                    "id": "3fcfe9d0-cc1b-437b-85f8-b2633c513dd1",
+                    "address": "kryo:5VWE7jqp7gXGKWUE64As2efpkJuWS4HFrVKT",
+                    "balance": 10500000000,
+                    "pending": 0
+                  },
+                  {
+                    "id": "70fa53c7-f7a3-453b-ba37-3d4c5e4daf43",
+                    "address": "kryo:5VWtQuxjWj8qLUmPZpZKqmWc8iVo86twSyh4",
+                    "balance": 2250000000,
+                    "pending": 0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/peers": {
+      "get": {
+        "tags": [
+          "misc"
+        ],
+        "description": "Returns peers",
+        "responses": {
+          "200": {
+            "description": "Request success",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  "https://testnet-2.kryolite.io",
+                  "6.9.4.20:1337"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/peers/unreachable": {
+      "get": {
+        "tags": [
+          "misc"
+        ],
+        "description": "Returns (currently) unreachable peers",
+        "responses": {
+          "200": {
+            "description": "Request success",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  "http://1.1.1.1:1337"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ledger/{address}": {
+      "get": {
+        "tags": [
+          "ledger"
+        ],
+        "description": "Returns a LedgerWallet",
+        "responses": {
+          "200": {
+            "description": "Wallet exists and has data",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "id": "70fa53c7-f7a3-453b-ba37-3d4c5e4daf43",
+                    "address": {
+                      "buffer": "oQAPcxSFU6Bm/hyYPsQAWndfaqQ8V6R/YHM="
+                    },
+                    "balance": 2250000000,
+                    "pending": 0
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Wallet has no data"
+          },
+          "400": {
+            "description": "Wallet does not exist"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/ledger/{address}/balance": {
+      "get": {
+        "tags": [
+          "ledger"
+        ],
+        "description": "Returns the balance of a wallet",
+        "responses": {
+          "200": {
+            "description": "Wallet found, Balance of the wallet",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "number"
+                },
+                "example": 0
+              }
+            }
+          },
+          "400": {
+            "description": "Wallet does not exist"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/ledger/{address}/transactions": {
+      "get": {
+        "tags": [
+          "ledger"
+        ],
+        "description": "Returns transaction history of wallet",
+        "responses": {
+          "200": {
+            "description": "Wallet exists",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "no transtaction": {
+                    "value": []
+                  },
+                  "has transactions": {
+                    "value": [
+                      {
+                        "id": "315c34ba-e532-4743-a76b-089174465138",
+                        "transactionType": 1,
+                        "publicKey": null,
+                        "to": {
+                          "buffer": "oQAhaJFzULj5zNndaaQJyqV8d62eXVOyh0o="
+                        },
+                        "value": 750000000,
+                        "maxFee": 0,
+                        "data": null,
+                        "nonce": 1198781660,
+                        "signature": null,
+                        "effects": [],
+                        "hash": {
+                          "buffer": "V2IxcG0XHygekABXCGA5Ouv6DOmjSMM7rTJNFV8gKq4="
+                        },
+                        "from": null
+                      },
+                      {
+                        "id": "37cbfa65-79df-4494-aa36-5d2bcc65cbc7",
+                        "transactionType": 1,
+                        "publicKey": null,
+                        "to": {
+                          "buffer": "oQAhaJFzULj5zNndaaQJyqV8d62eXVOyh0o="
+                        },
+                        "value": 750000000,
+                        "maxFee": 0,
+                        "data": null,
+                        "nonce": 970975531,
+                        "signature": null,
+                        "effects": [],
+                        "hash": {
+                          "buffer": "lbXqdmDUDgd4xo0cVPZDF85sHMwycxRuXR3XUQqnXxg="
+                        },
+                        "from": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid address"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/contract/{address}": {
+      "get": {
+        "tags": [
+          "to-do"
+        ],
+        "description": "Gets a contract",
+        "responses": {
+          "200": {
+            "description": "TODO"
+          },
+          "204": {
+            "description": "No contract found"
+          },
+          "400": {
+            "description": "Invalid address"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/contract/{address}/state": {
+      "get": {
+        "tags": [
+          "to-do"
+        ],
+        "description": "Gets the contract state",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "contract": {
+                    "value": "TODO"
+                  },
+                  "no contract": {
+                    "description": "Content lenght 0",
+                    "value": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid address"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/tx/{hash}": {
+      "get": {
+        "tags": [
+          "misc"
+        ],
+        "description": "Gets a transaction with Sha256-hash",
+        "responses": {
+          "200": {
+            "description": "Transaction exists",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "id": "2956a6b3-b7bc-4c8f-8a26-dc7361ea7d27",
+                    "transactionType": 1,
+                    "publicKey": null,
+                    "to": {
+                      "buffer": "oQAPcxSFU6Bm/hyYPsQAWndfaqQ8V6R/YHM="
+                    },
+                    "value": 750000000,
+                    "maxFee": 0,
+                    "data": null,
+                    "nonce": 1994864687,
+                    "signature": null,
+                    "effects": [],
+                    "hash": {
+                      "buffer": "Mh3Zn4wRn+5jxFdqWzeAjFwERwHW2I7AMlLa8qi38kU="
+                    },
+                    "from": null
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid hash"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "hash",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/block/pos": {
+      "get": {
+        "tags": [
+          "blocks"
+        ],
+        "description": "Returns a POS block at a certain height",
+        "responses": {
+          "200": {
+            "description": "Block found!",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "id": "55859953-e23c-4a28-a858-25148276e5cf",
+                    "height": 13439,
+                    "parentHash": {
+                      "buffer": "DOiBaGDR9mq3qxt9GVmaNET51j3yh3JuMl0rtrouQWk="
+                    },
+                    "timestamp": 1675682065,
+                    "pow": {
+                      "id": "23b30358-3100-4ce2-9c73-cb92e7cdd20c",
+                      "posBlockId": "55859953-e23c-4a28-a858-25148276e5cf",
+                      "height": 13439,
+                      "parentHash": {
+                        "buffer": "z07T5zbAyTYSpGMOPK6xRZ6Nux/BBBHoXWkGh2pNqoA="
+                      },
+                      "timestamp": 1675682042,
+                      "nonce": {
+                        "buffer": "85l7xwURY/3yJvWRn71D9vACU9QbuTjG3Ql8tSWHykY="
+                      },
+                      "difficulty": {
+                        "value": 2269808667,
+                        "b0": 27,
+                        "b1": 136,
+                        "b2": 74,
+                        "b3": 135
+                      },
+                      "transactions": [
+                        {
+                          "id": "8b47e966-8c73-4196-b391-22759d2c5a12",
+                          "transactionType": 1,
+                          "publicKey": null,
+                          "to": {
+                            "buffer": "oQDAOJC8e8IxqWQG5EWPHoPOmzR6sp6bP/M="
+                          },
+                          "value": 750000000,
+                          "maxFee": 0,
+                          "data": null,
+                          "nonce": -446737379,
+                          "signature": null,
+                          "effects": [],
+                          "hash": {
+                            "buffer": "oxTryaRTGAvQPhEi+7ibjuglgHcaJUdjCpgyI6askeA="
+                          },
+                          "from": null
+                        }
+                      ]
+                    },
+                    "transactions": [],
+                    "signedBy": {
+                      "buffer": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+                    },
+                    "signature": {
+                      "buffer": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+                    },
+                    "votes": [
+                      {
+                        "id": 17215,
+                        "height": 13439,
+                        "hash": {
+                          "buffer": "XyTo318fneDEJso9A3n8Hqe+iYPVbd/4lljSJ2GAAQ4="
+                        },
+                        "publicKey": {
+                          "buffer": "a48HUIUC9/b2Z+qUvd5yHgCpk1QMpKA+neGoHLZNvrg="
+                        },
+                        "signature": {
+                          "buffer": "EXB5pK2KqpFpBY3TJjW+0uBIXr7b3nvuq6I+OdH6SfqVwhbNbF6+MUOWrMqQFXOIqs1vhvfy/goi7naYGSSeCw=="
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid hash"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "query",
+          "name": "height",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ]
+    },
+    "/block/pow": {
+      "get": {
+        "tags": [
+          "blocks"
+        ],
+        "description": "Returns a POW block at a certain height",
+        "responses": {
+          "200": {
+            "description": "Block found!",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "id": "23b30358-3100-4ce2-9c73-cb92e7cdd20c",
+                    "posBlockId": "55859953-e23c-4a28-a858-25148276e5cf",
+                    "height": 13439,
+                    "parentHash": {
+                      "buffer": "z07T5zbAyTYSpGMOPK6xRZ6Nux/BBBHoXWkGh2pNqoA="
+                    },
+                    "timestamp": 1675682042,
+                    "nonce": {
+                      "buffer": "85l7xwURY/3yJvWRn71D9vACU9QbuTjG3Ql8tSWHykY="
+                    },
+                    "difficulty": {
+                      "value": 2269808667,
+                      "b0": 27,
+                      "b1": 136,
+                      "b2": 74,
+                      "b3": 135
+                    },
+                    "transactions": [
+                      {
+                        "id": "8b47e966-8c73-4196-b391-22759d2c5a12",
+                        "transactionType": 1,
+                        "publicKey": null,
+                        "to": {
+                          "buffer": "oQDAOJC8e8IxqWQG5EWPHoPOmzR6sp6bP/M="
+                        },
+                        "value": 750000000,
+                        "maxFee": 0,
+                        "data": null,
+                        "nonce": -446737379,
+                        "signature": null,
+                        "effects": [],
+                        "hash": {
+                          "buffer": "oxTryaRTGAvQPhEi+7ibjuglgHcaJUdjCpgyI6askeA="
+                        },
+                        "from": null
+                      }
+                    ],
+                    "pos": {
+                      "id": "55859953-e23c-4a28-a858-25148276e5cf",
+                      "height": 13439,
+                      "parentHash": {
+                        "buffer": "DOiBaGDR9mq3qxt9GVmaNET51j3yh3JuMl0rtrouQWk="
+                      },
+                      "timestamp": 1675682065,
+                      "transactions": [],
+                      "signedBy": {
+                        "buffer": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+                      },
+                      "signature": {
+                        "buffer": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+                      },
+                      "votes": [
+                        {
+                          "id": 17215,
+                          "height": 13439,
+                          "hash": {
+                            "buffer": "XyTo318fneDEJso9A3n8Hqe+iYPVbd/4lljSJ2GAAQ4="
+                          },
+                          "publicKey": {
+                            "buffer": "a48HUIUC9/b2Z+qUvd5yHgCpk1QMpKA+neGoHLZNvrg="
+                          },
+                          "signature": {
+                            "buffer": "EXB5pK2KqpFpBY3TJjW+0uBIXr7b3nvuq6I+OdH6SfqVwhbNbF6+MUOWrMqQFXOIqs1vhvfy/goi7naYGSSeCw=="
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid hash"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "query",
+          "name": "height",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ]
+    },
+    "/balance": {
+      "get": {
+        "tags": [
+          "misc"
+        ],
+        "description": "Returns the balance of a wallet",
+        "responses": {
+          "200": {
+            "description": "Wallet exists",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "integer",
+                  "example": 102750000000
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid wallet"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "query",
+          "name": "wallet",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    }
+  }
+}
