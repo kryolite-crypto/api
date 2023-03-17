@@ -314,6 +314,45 @@
         }
       ]
     },
+    "/contract/{address}/call": {
+      "post": {
+        "tags": [
+          "contract"
+        ],
+        "description": "todo",
+        "responses": {
+          "200": {
+            "description": "Contract exists",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "ticket_price": 100000000,
+                    "registration_open": true,
+                    "registrants": [],
+                    "last_winner": {
+                      "address": "kryo:11111111111111111111111111",
+                      "reward": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
     "/contract/{address}/state": {
       "get": {
         "tags": [
@@ -333,7 +372,7 @@
                     "value": "TODO"
                   },
                   "no contract": {
-                    "description": "Content lenght 0",
+                    "description": "Content length 0",
                     "value": null
                   }
                 }
